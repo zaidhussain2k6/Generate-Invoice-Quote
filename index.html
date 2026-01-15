@@ -6,7 +6,6 @@
 <title>Generate Invoice</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-    /* Global Styles */
     * {
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -18,7 +17,6 @@
       color: #2b2b2b;
     }
     
-    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -30,12 +28,10 @@
       background-color: #6B2737;
     }
     
-    /* Container */
     .container {
       padding: 38px;
     }
     
-    /* Form Labels */
     label {
       display: block;
       font-size: 13px;
@@ -43,7 +39,6 @@
       margin-bottom: 6px;
     }
     
-    /* Inputs & Selects */
     input,
     select {
       width: 100%;
@@ -55,7 +50,6 @@
       margin-bottom: 14px;
     }
     
-    /* Rows */
     .row {
       display: flex;
       gap: 12px;
@@ -65,7 +59,6 @@
       flex: 1;
     }
     
-    /* Add Item Box */
     .add-item {
       border: 1.5px dashed #e5dada;
       padding: 14px;
@@ -77,7 +70,6 @@
       cursor: pointer;
     }
     
-    /* Individual Item */
     .item {
       border: 1px solid #e5dada;
       border-radius: 12px;
@@ -86,14 +78,12 @@
       background: #fff;
     }
     
-    /* Footer */
     .footer {
       padding: 16px;
       padding-left: 38px;
       padding-right: 38px;
     }
     
-    /* Save Button */
     .save-btn {
       width: 100%;
       padding: 16px;
@@ -114,7 +104,6 @@
 
 <div class="container">
 
-  <!-- Company & Client -->
   <label>Company Name</label>
   <input id="companyName" type="text">
 
@@ -127,7 +116,6 @@
   <label>Client Address</label>
   <input id="clientAddress" type="text">
 
-  <!-- Invoice Info -->
   <div class="row">
     <div>
       <label>Invoice Number</label>
@@ -152,7 +140,6 @@
     <option>Cancelled</option>
   </select>
 
-  <!-- ITEMS -->
   <div id="items"></div>
   <div class="add-item" onclick="addItem()">+ Add Item</div>
 
@@ -219,7 +206,6 @@ function generatePDF() {
   const doc = new jsPDF();
   let y = 20;
 
-  // Header
   doc.setFontSize(18);
   doc.text("INVOICE", 14, y);
 
@@ -248,7 +234,6 @@ function generatePDF() {
   doc.text("Items", 14, y);
   y += 6;
 
-  // Table Header
   doc.setFontSize(11);
   doc.text("Item", 14, y);
   doc.text("Description", 64, y);
@@ -259,7 +244,6 @@ function generatePDF() {
   doc.line(14, y, 195, y);
   y += 6;
 
-  // Items
   document.querySelectorAll(".item").forEach(item => {
     const name = item.querySelector(".item-name").value;
     const desc = item.querySelector(".item-desc").value;
@@ -279,7 +263,6 @@ function generatePDF() {
   doc.line(14, y, 195, y);
   y += 6;
 
-  // Totals
   const subtotal = calculateTotal();
   const vatPercent = Number(document.getElementById("vat").value);
   const vatAmount = (subtotal * vatPercent / 100).toFixed(2);
@@ -292,14 +275,12 @@ function generatePDF() {
   doc.setFontSize(12);
   doc.text(`Total: $${totalAmount}`, 140, y);
 
-  // Payment info
   y += 10;
   doc.setFontSize(11);
   doc.text(`Payment Terms: ${document.getElementById("paymentTerms").value}`, 14, y);
   y += 6;
   doc.text(`Bank / Payment: ${document.getElementById("bankDetails").value}`, 14, y);
 
-  // Note
   const note = document.getElementById("note").value;
   if(note){
     y += 10;
@@ -309,7 +290,6 @@ function generatePDF() {
   doc.save("invoice.pdf");
 }
 
-// default first item
 addItem();
 </script>
 </body>

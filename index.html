@@ -147,7 +147,7 @@
   <select id="vat" onchange="calculateTotal()">
     <option value="20">20%</option>
     <option value="15">15%</option>
-    <option value="10">10%</option>
+    <option value="10">5%</option>
     <option value="0">0%</option>
   </select>
 
@@ -177,8 +177,14 @@ function addItem() {
       <input type="text" class="item-name" placeholder="Item name">
       <input type="text" class="item-desc" placeholder="Description (optional)">
       <div class="row">
+        
+      <label>Quantity</label>
         <div><input type="number" class="item-qty" placeholder="Quantity" value="1" oninput="calculateTotal()"></div>
+        
+      <label>Unit Price</label>
         <div><input type="number" class="item-price" placeholder="Unit Price" value="0" oninput="calculateTotal()"></div>
+        
+      <label>Total Amount in $</label>
         <div><input type="number" class="item-total" placeholder="Line Total" value="0" readonly></div>
       </div>
     </div>

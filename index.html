@@ -226,15 +226,111 @@ function calculateTotal() {
 function generatePDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  const type = document.getElementById("docType").value.toUpperCase();
+  let y = 20;
 
+  const docType = document.getElementById("docType").value;
+
+  /* ===== TITLE ===== */
   doc.setFontSize(18);
-  doc.text(type, 14, 20);
+  doc.text(docType === "invoice" ? "INVOICE" : "QUOTE", 14, y);
 
-  doc.save(type.toLowerCase() + ".pdf");
+  if (docType === "invoice") {
+    doc.setFontSize(11);
+    doc.text(`Invoice #: ${invoiceNumber.value}`, 150, y);
+    y += 6;
+    doc.text(`Issue Date: ${issueDate.value}`, 150, y);
+    y += 6;
+    doc.text(`Due Date: ${dueDate.value}`, 150, y);
+  }
+
+  y += 14;
+
+  /* ===== FROM / TO ===== */
+  doc.setFontSize(12);
+  doc.text("From:", 14, y);
+  doc.text("To:", 120, y);
+  y += 6;
+
+  doc.setFontSize(11);
+  doc.text(companyName.value, 14, y);
+  doc.text(clientName.value, 120, y);
+  y += 6;
+
+  doc.text(companyAddress.value, 14, y);
+  doc.text(clientAddress.value, 120, y);
+
+  y += 12;
+
+  /* ===== ITEMS HEADER ===== */
+  doc.setFontSize(12);
+  doc.text("Items", 14, y);
+  y += 6;
+
+  doc.setFontSize(11);
+  doc.text("Item", 14, y);
+  doc.text("Qty", 110, y);
+  doc.text("Price", 130, y);
+  doc.text("Total", 170, y);
+
+  y += 3;
+  doc.line(14, y, 195, y);
+  y += 6;
+
+  /* ===== ITEMS LIST ===== */
+  document.querySelectorAll(".item").forEach(item => {
+    const name = item.querySelector(".item-name").value;
+    const qty = item.querySelector(".item-qty").value;
+    const price = item.querySelector(".item-price").value;
+    const total = item.querySelector(".item-total").value;
+
+    doc.text(name, 14, y);
+    doc.text(qty, 110, y);
+    doc.text(`$${price}`, 130, y);
+    doc.text(`$${total}`, 170, y);
+    y += 6;
+  });
+
+  y += 4;
+  doc.line(14, y, 195, y);
+  y += 8;
+
+  /* ===== TOTALS ===== */
+  const subtotal = calculateTotal();
+  doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 130, y);
+  y += 6;
+
+  if (docType === "invoice") {
+    const vatPercent = Number(vat.value);
+    const vatAmount = subtotal * vatPercent / 100;
+
+    doc.text(`VAT (${vatPercent}%): $${vatAmount.toFixed(2)}`, 130, y);
+    y += 6;
+    doc.setFontSize(12);
+    doc.text(`Total: $${(subtotal + vatAmount).toFixed(2)}`, 130, y);
+  } else {
+    doc.setFontSize(12);
+    doc.text(`Estimated Total: $${subtotal.toFixed(2)}`, 130, y);
+  }
+
+  y += 12;
+
+  /* ===== PAYMENT / NOTE ===== */
+  doc.setFontSize(11);
+
+  if (docType === "invoice") {
+    doc.text(`Payment Terms: ${paymentTerms.value}`, 14, y);
+    y += 6;
+    doc.text(`Payment Method: ${bankDetails.value}`, 14, y);
+  }
+
+  if (note.value) {
+    y += 8;
+    doc.text(`Note: ${note.value}`, 14, y);
+  }
+
+  /* ===== SAVE ===== */
+  doc.save(docType + ".pdf");
 }
-
-addItem();
 </script>
 
 </body>
